@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:layout_width="match_parent"
+        app:srcCompat="@drawable/ic_pad"
+        android:id="@+id/menu_elem_image"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:layout_weight="4"
+        android:layout_height="0dp" />
+
+    <TextView
+        android:text="@string/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/menu_elem_name"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="normal|bold" />
+</LinearLayout>

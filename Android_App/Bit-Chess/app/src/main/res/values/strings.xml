@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Bit-Chess</string>
+    <string name="action_settings">Settings</string>
+    <string name="placeholder">Android</string>
+
+    <string-array name="text_size_values">
+        <item>20</item>
+        <item>26</item>
+        <item>32</item>
+    </string-array>
+
+    <string-array name="text_size">
+        <item>Mały</item>
+        <item>Średni</item>
+        <item>Duży</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
