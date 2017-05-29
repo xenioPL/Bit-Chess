@@ -39,7 +39,7 @@ public class MenuFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        getFragmentManager().beginTransaction().replace(R.id.content_main, new GameClock()).addToBackStack("clock").commit();
                     }
                 });
         menuAdapter.addElement(R.drawable.ic_pad, "KOLORYSTYKA",

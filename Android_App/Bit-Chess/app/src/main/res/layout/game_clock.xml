@@ -9,7 +9,7 @@
         android:orientation="horizontal">
 
 
-        <Chronometer
+        <pl.vlo.bit_chess.bit_chess.Chronometer2
             android:id="@+id/chronometer1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             android:textSize="60sp"
             android:gravity="center"/>
 
-        <Chronometer
+        <pl.vlo.bit_chess.bit_chess.Chronometer2
             android:id="@+id/chronometer2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
