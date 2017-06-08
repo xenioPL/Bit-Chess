@@ -1,0 +1,850 @@
+#include <iostream>
+using namespace std;
+#define B_K   -6 //król
+#define B_D   -5 //hetman
+#define B_S   -4 //koñ
+#define B_L   -3 //goniec
+#define B_T   -2 // wierza
+#define B_B   -1 //pionek
+#define EMPTY   0
+#define W_B    1
+#define W_T    2
+#define W_L    3
+#define W_S    4
+#define W_D    5
+#define W_K    6
+#define OUT 100
+
+int material[13] = {1,1,2,2,2,8,0,8,2,2,2,1,1};
+int chess[12][12]{
+OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,
+OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,
+OUT,OUT,W_T, W_S ,W_L ,W_D ,W_K ,W_L ,W_S ,W_T, OUT,OUT,
+OUT,OUT,W_B, W_B ,W_B ,W_B ,W_B ,W_B ,W_B ,W_B, OUT,OUT,
+OUT,OUT,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,OUT,OUT,
+OUT,OUT,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,OUT,OUT,
+OUT,OUT,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,OUT,OUT,
+OUT,OUT,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,OUT,OUT,
+OUT,OUT,B_B ,B_B ,B_B ,B_B ,B_B ,B_B ,B_B ,B_B, OUT,OUT,
+OUT,OUT,B_T, B_S ,B_L ,B_D ,B_K ,B_L ,B_S ,B_T, OUT,OUT,
+OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,
+OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT,OUT};
+
+int legal(int x1,int y1,int x2,int y2,int collor,int piece_type);
+void wypisz (){
+    for(int i =2;i<10;i++)
+{
+    for(int j =2;j<10;j++)
+        if(chess[i][j]>-1)
+    cout<<" "<<chess[i][j]<<" ";
+    else
+        cout<<chess[i][j]<<" ";
+    cout<<endl;
+}
+};
+
+int moving(int x1,int y1,int x2,int y2,int collor){
+    if(x1 == x2 && y1 == y2)
+    {
+        cout<<"ERROR: YOU HAVE TO MOVE"<<endl;
+        return 0;
+    }
+    if(chess[x1+2][y1+2] == EMPTY)
+{
+    cout<<"ERROR: THERE IS NO PIECE HERE"<<endl;
+    return 0;
+}
+
+    if(chess[x1+2][y1+2] == OUT)
+{
+    cout<<"ERROR: THERE CAN NOT BE PIECE OUTSIDE OF BOARD"<<endl;
+    return 0;
+}
+if(chess[x2+2][y2+2] == OUT)
+{
+    cout<<"ERROR: YOU CAN'T MOVE OUT OF CHESSBOARD"<<endl;
+    return 0;
+}
+if(collor == -1) //sprawdzenie koloru
+{
+if(chess[x1+2][y1+2] > 0){
+        cout<<"ERROR: THAT'S NOT YOUR PIECE TO MOVE"<<endl;
+    return 0;
+    }
+if(chess[x2+2][y2+2] > -1){
+        if(legal(x1,y1,x2,y2,collor,chess[x1+2][y1+2]))
+    {
+material[chess[x2+2][y2+2]+6]--;
+chess[x2+2][y2+2] = chess[x1+2][y1+2];
+chess[x1+2][y1+2] = EMPTY;
+return 1;
+}
+else
+{
+    cout<<"ERROR: THAT'S ILEGALL MOVE"<<endl;
+    return 0;
+}
+}
+else{
+    cout<<"ERROR:This place is occupied by your own piece"<<endl;
+    return 0;
+}
+}
+
+
+else
+{
+    if(chess[x1+2][y1+2] < 0)
+    {
+        cout<<"ERROR: THAT'S NOT YOUR PIECE TO MOVE"<<endl;
+    return 0;
+    }
+    if(chess[x2+2][y2+2] < 1)
+{
+    if(legal(x1,y1,x2,y2,collor,chess[x1+2][y1+2]))
+    {
+material[chess[x2+2][y2+2]+6]--;
+chess[x2+2][y2+2] = chess[x1+2][y1+2];
+chess[x1+2][y1+2] = EMPTY;
+return 1;
+}
+else
+{
+    cout<<"ERROR: THAT'S ILEGALL MOVE"<<endl;
+    return 0;
+}
+}
+else
+{
+    cout<<"ERROR:This place is occupied by your own piece"<<endl;
+    return 0;
+}
+}
+};
+
+int legal (int x1,int y1,int x2,int y2,int collor,int piece_type){
+    if (piece_type == 1 || piece_type == -1){ //pionki
+        if(collor == 1)
+        {
+            if(chess[x2+2][y2+2] == EMPTY)
+            if(y1 == y2)
+            {
+            if(x2 - x1 == 1)return 1;
+            if(x1 == 1 && x2 == 3)return 1;
+            }
+            if(chess[x2+2][y2+2] != EMPTY)
+            if(y2 -y1 == 1 || y2 - y1 == -1)
+            if(x2 - x1 == 1) return 1;
+            return 0;
+            }
+        else
+        {
+            if(chess[x2+2][y2+2] == EMPTY)
+            if(y1 == y2)
+            {
+            if(x2 - x1 == -1)return 1;
+            if(x1 == 6 && x2 == 4)return 1;
+            }
+            if(chess[x2+2][y2+2] != EMPTY)
+            if(y2 -y1 == 1 || y2 - y1 == -1)
+            if(x2 - x1 == -1) return 1;
+            return 0;
+            }
+    }
+    if (piece_type == 2 || piece_type == -2){ //wierze
+            if(x1 == x2)
+            {
+                if(y1 > y2)
+                {
+                    for(int i = y1-y2-1;i > 0;--i)
+                        if(chess[x1+2][y2+i+2] != EMPTY) return 0;
+                }
+                else
+                {
+                        for(int i = y2-y1-1;i > 0;--i)
+                        if(chess[x1+2][y1+i+2] != EMPTY) return 0;
+                }
+                return 1;
+            }
+            if(y1 == y2)
+            {
+                if(x1 > x2)
+                {
+                    for(int i = x1-x2-1;i > 0;--i)
+                        if(chess[x2+2+i][y2+2] != EMPTY) return 0;
+                }
+                else
+                {
+                        for(int i = x2-x1-1;i > 0;--i)
+                        if(chess[x1+2+i][y1+2] != EMPTY) return 0;
+                }
+                return 1;
+
+            }
+        return 0;
+    }
+    if (piece_type == 3 || piece_type == -3){ //goñce
+        if(x2 - x1 == (y2 - y1))
+        {
+            if(x2-x1 > 0)
+            {
+                for(int i = x2-x1-1;i>0;i--)
+                if(chess[x1+2+i][y1+2+i] != EMPTY) return 0;
+            }
+            else
+            {
+                for(int i = x2-x1+1;i<0;i++)
+                if(chess[x1+2+i][y1+2+i] != EMPTY) return 0;
+            }
+            return 1;
+
+        }
+        if(x2 - x1 == (y2 - y1)*-1)
+        {
+                if(x2-x1 > 0)
+            {
+                for(int i = x2-x1-1;i>0;i--)
+                if(chess[x1+2+i][y1+2-i] != EMPTY) return 0;
+            }
+            else
+            {
+                for(int i = x2-x1+1;i<0;i++)
+                if(chess[x1+2+i][y1+2-i] != EMPTY) return 0;
+            }
+            return 1;
+        }
+            return 0;
+    }
+    if (piece_type == 4 || piece_type == -4){ //kon
+        if(((x2 - x1 == 2) || (x2 - x1 == -2))&&((y2 - y1 == 1) || (y2 - y1 == -1))) return 1;
+        if(((x2 - x1 == 1) || (x2 - x1 == -1))&&((y2 - y1 == 2) || (y2 - y1 == -2))) return 1;
+        return 0;
+    }
+    if (piece_type == 5 || piece_type == -5){ //hetman
+        if(legal(x1,y1,x2,y2,collor,2)||(legal(x1,y1,x2,y2,collor,3)))
+        return 1;
+        return 0;
+    }
+    if (piece_type == 6 || piece_type == -6){ //krul
+       if(((x2 - x1 == 1)||(x2-x1 == 0) || (x2 - x1 == -1))&&((y2 - y1 == 1)||(y2-y1==0) || (y2 - y1 == -1))) return 1;
+        return 0;
+    }
+return 1;
+};
+
+
+int moves (int chessprim[12][12],int collor){
+    int licznik = 0;
+    for(int x1 = 0;x1<8;x1++)
+    for(int y1 =0;y1<8;y1++)
+        if(chessprim[x1+2][y1+2] * collor > 0){
+
+            int piece_type = chessprim[x1+2][y1+2];
+
+            if (piece_type == 1 || piece_type == -1){ //pionki
+
+                if(chessprim[x1+2+collor] == EMPTY){ licznik++;
+                if((collor == 1 && x1 == 1)||(collor == -1 && x1 == 7))
+                if(chessprim[x1+2+(2*collor)] == EMPTY) licznik++;
+                }
+                if(collor == 1)
+                {
+                if(chessprim[x1+2+collor][y1+3] < 0)licznik++;
+                if(chessprim[x1+2+collor][y1+1] < 0)licznik++;
+                }
+                if(collor == -1)
+                {
+                if(chessprim[x1+2+collor][y1+3] > 0 && chessprim[x1+2+collor][y1+3] != OUT)licznik++;
+                if(chessprim[x1+2+collor][y1+1] > 0 && chessprim[x1+2+collor][y1+3] != OUT)licznik++;
+                }
+
+            }
+            if (piece_type == 2 || piece_type == -2){ //wierze
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2] > 0 && chessprim[x1+2+i][y1+2] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2] > 0 && chessprim[x1+2-i][y1+2] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2+i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2+i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2+i] > 0 && chessprim[x1+2][y1+2+i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2-i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2-i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2-i] > 0 && chessprim[x1+2][y1+2-i] != OUT)licznik++;
+                        break;
+                    }
+                }
+            }
+            if (piece_type == 3 || piece_type == -3){
+                    for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2+i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2+i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2+i] > 0 && chessprim[x1+2+i][y1+2+i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2-i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2-i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2-i] > 0 && chessprim[x1+2-i][y1+2-i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2+i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2+i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2+i] > 0 && chessprim[x1+2-i][y1+2+i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2-i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2-i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2-i] > 0 && chessprim[x1+2+i][y1+2-i] != OUT)licznik++;
+                        break;
+                    }
+                }
+
+
+            }
+            if (piece_type == 4 || piece_type == -4){
+                if((chessprim[x1+2+2][y1+2+1] == EMPTY || chessprim[x1+2+2][y1+2+1] * collor < 0 )&& chessprim[x1+2+2][y1+2+1] != OUT) licznik++;
+                if((chessprim[x1+2-2][y1+2+1] == EMPTY || chessprim[x1+2-2][y1+2+1] * collor < 0 )&& chessprim[x1+2-2][y1+2+1] != OUT) licznik++;
+                if((chessprim[x1+2+2][y1+2-1] == EMPTY || chessprim[x1+2+2][y1+2-1] * collor < 0 )&& chessprim[x1+2+2][y1+2-1] != OUT) licznik++;
+                if((chessprim[x1+2-2][y1+2-1] == EMPTY || chessprim[x1+2-2][y1+2-1] * collor < 0 )&& chessprim[x1+2+2][y1+2-1] != OUT) licznik++;
+                if((chessprim[x1+2+1][y1+2+2] == EMPTY || chessprim[x1+2+1][y1+2+2] * collor < 0 )&& chessprim[x1+2+1][y1+2+2] != OUT) licznik++;
+                if((chessprim[x1+2-1][y1+2+2] == EMPTY || chessprim[x1+2-1][y1+2+2] * collor < 0 )&& chessprim[x1+2-1][y1+2+2] != OUT) licznik++;
+                if((chessprim[x1+2+1][y1+2-2] == EMPTY || chessprim[x1+2+1][y1+2-2] * collor < 0 )&& chessprim[x1+2+1][y1+2-2] != OUT) licznik++;
+                if((chessprim[x1+2-1][y1+2-2] == EMPTY || chessprim[x1+2-1][y1+2-2] * collor < 0 )&& chessprim[x1+2+1][y1+2-2] != OUT) licznik++;
+
+
+            }
+            if (piece_type == 5 || piece_type == -5){
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2] > 0 && chessprim[x1+2+i][y1+2] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2] > 0 && chessprim[x1+2-i][y1+2] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2+i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2+i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2+i] > 0 && chessprim[x1+2][y1+2+i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2-i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2-i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2-i] > 0 && chessprim[x1+2][y1+2-i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2+i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2+i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2+i] > 0 && chessprim[x1+2+i][y1+2+i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2-i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2-i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2-i] > 0 && chessprim[x1+2-i][y1+2-i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2+i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2+i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2+i] > 0 && chessprim[x1+2-i][y1+2+i] != OUT)licznik++;
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2-i] == EMPTY) licznik++;
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2-i] < 0)licznik++;
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2-i] > 0 && chessprim[x1+2+i][y1+2-i] != OUT)licznik++;
+                        break;
+                    }
+                }
+            }
+            if (piece_type == 6 || piece_type == -6){
+               if((chessprim[x1+2+1][y1+2+1] == EMPTY || chessprim[x1+2+1][y1+2+1] *collor < 0 )&& chessprim[x1+2+1][y1+2+1] != OUT)licznik++;
+               if((chessprim[x1+2-1][y1+2+1] == EMPTY || chessprim[x1+2-1][y1+2+1] *collor < 0 )&& chessprim[x1+2-1][y1+2+1] != OUT)licznik++;
+               if((chessprim[x1+2+1][y1+2-1] == EMPTY || chessprim[x1+2+1][y1+2-1] *collor < 0 )&& chessprim[x1+2+1][y1+2-1] != OUT)licznik++;
+               if((chessprim[x1+2-1][y1+2-1] == EMPTY || chessprim[x1+2-1][y1+2-1] *collor < 0 )&& chessprim[x1+2-1][y1+2-1] != OUT)licznik++;
+               if((chessprim[x1+2][y1+2-1] == EMPTY || chessprim[x1+2][y1+2-1] *collor < 0 )&& chessprim[x1+2][y1+2-1] != OUT)licznik++;
+               if((chessprim[x1+2-1][y1+2] == EMPTY || chessprim[x1+2-1][y1+2] *collor < 0 )&& chessprim[x1+2-1][y1+2] != OUT)licznik++;
+               if((chessprim[x1+2][y1+2+1] == EMPTY || chessprim[x1+2][y1+2+1] *collor < 0 )&& chessprim[x1+2][y1+2+1] != OUT)licznik++;
+               if((chessprim[x1+2+1][y1+2] == EMPTY || chessprim[x1+2+1][y1+2] *collor < 0 )&& chessprim[x1+2+1][y1+2] != OUT)licznik++;
+            }
+        }
+return licznik;
+}
+
+
+double evaluate(int chessprim[12][12],int materialprim[13],int to_move){//do dorobienia mobiltity i zdublowane pioneczki
+    double materailScore =
+                200  * (materialprim[0]-materialprim[12])
+              + 9 * (materialprim[1]-materialprim[11])
+              + 5 * (materialprim[2]-materialprim[10])
+              + 3 * (materialprim[3]-materialprim[9])
+              + 3 * (materialprim[4]-materialprim[8])
+              + 1 * (materialprim[5]-materialprim[7]);
+              //- -0,5 (D-D' + S-S' + I-I);
+   double  mobilityScore =  double(moves(chessprim,1)- moves(chessprim,-1))/10;
+   return (materailScore + mobilityScore) * to_move;
+
+}
+
+
+const int depthstat = 3;
+
+struct hipomove
+{
+    double strength;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+};
+
+hipomove negaMax (int depth,int chess[12][12],int material[13],int x1move,int y1move,int x2move,int y2move,int collor){
+int materialprim[13];
+int chessprim[12][12];
+copy(material,material+13,materialprim);
+for(int i =0;i<12;i++)
+    copy(chess[i],chess[i]+12,chessprim[i]);
+if(depth != depthstat)
+{
+materialprim[chessprim[x2move+2][y2move+2]+6]--;
+chessprim[x2move+2][y2move+2] = chessprim[x1move+2][y1move+2];
+chessprim[x1move+2][y1move+2] = EMPTY;
+}
+
+    if(depth < 1) {
+            hipomove evaluation;
+    evaluation.strength = evaluate(chessprim,materialprim,-1);
+            return evaluation;
+    }
+    hipomove maks;
+    maks.strength = -9999999;
+    hipomove score;
+    for(int x1 = 0;x1<8;x1++)
+    for(int y1 =0;y1<8;y1++)
+        if(chessprim[x1+2][y1+2] * collor > 0){
+
+            int piece_type = chessprim[x1+2][y1+2];
+
+            if (piece_type == 1 || piece_type == -1){ //pionki
+
+                if(chessprim[x1+2+collor][y1+2] == EMPTY){
+                        {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+collor,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((collor == 1 && x1 == 1)||(collor == -1 && x1 == 7))
+                if(chessprim[x1+2+(2*collor)][y1+2] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+2*collor,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                }
+                if(collor == 1)
+                {
+                if(chessprim[x1+2+collor][y1+3] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+collor,y1+1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if(chessprim[x1+2+collor][y1+1] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+collor,y1-1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                }
+                if(collor == -1)
+                {
+                if(chessprim[x1+2+collor][y1+3] > 0 && chessprim[x1+2+collor][y1+3] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+collor,y1+1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if(chessprim[x1+2+collor][y1+1] > 0 && chessprim[x1+2+collor][y1+1] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+collor,y1-1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                }
+
+            }
+            if (piece_type == 2 || piece_type == -2){ //wierze
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2] > 0 && chessprim[x1+2+i][y1+2] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2] > 0 && chessprim[x1+2-i][y1+2] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2+i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2+i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2+i] > 0 && chessprim[x1+2][y1+2+i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2-i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2-i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2-i] > 0 && chessprim[x1+2][y1+2-i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+            }
+            if (piece_type == 3 || piece_type == -3){
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2+i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2+i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2+i] > 0 && chessprim[x1+2+i][y1+2+i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2-i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2-i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2-i] > 0 && chessprim[x1+2-i][y1+2-i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2+i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2+i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2+i] > 0 && chessprim[x1+2-i][y1+2+i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2-i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2-i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2-i] > 0 && chessprim[x1+2+i][y1+2-i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+
+
+            }
+            if (piece_type == 4 || piece_type == -4){
+                if((chessprim[x1+2+2][y1+2+1] == EMPTY || chessprim[x1+2+2][y1+2+1] * collor < 0 )&& chessprim[x1+2+2][y1+2+1] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+2,y1+1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((chessprim[x1+2-2][y1+2+1] == EMPTY || chessprim[x1+2-2][y1+2+1] * collor < 0 )&& chessprim[x1+2-2][y1+2+1] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-2,y1+1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((chessprim[x1+2+2][y1+2-1] == EMPTY || chessprim[x1+2+2][y1+2-1] * collor < 0 )&& chessprim[x1+2+2][y1+2-1] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+2,y1-1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((chessprim[x1+2-2][y1+2-1] == EMPTY || chessprim[x1+2-2][y1+2-1] * collor < 0 )&& chessprim[x1+2-2][y1+2-1] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-2,y1-1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((chessprim[x1+2+1][y1+2+2] == EMPTY || chessprim[x1+2+1][y1+2+2] * collor < 0 )&& chessprim[x1+2+1][y1+2+2] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+1,y1+2,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((chessprim[x1+2-1][y1+2+2] == EMPTY || chessprim[x1+2-1][y1+2+2] * collor < 0 )&& chessprim[x1+2-1][y1+2+2] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-1,y1+2,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((chessprim[x1+2+1][y1+2-2] == EMPTY || chessprim[x1+2+1][y1+2-2] * collor < 0 )&& chessprim[x1+2+1][y1+2-2] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+1,y1-2,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                if((chessprim[x1+2-1][y1+2-2] == EMPTY || chessprim[x1+2-1][y1+2-2] * collor < 0 )&& chessprim[x1+2-1][y1+2-2] != OUT) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-1,y1-2,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+
+
+            }
+            if (piece_type == 5 || piece_type == -5){
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2+i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2+i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2+i] > 0 && chessprim[x1+2+i][y1+2+i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2-i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2-i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2-i] > 0 && chessprim[x1+2-i][y1+2-i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2+i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2+i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2+i] > 0 && chessprim[x1+2-i][y1+2+i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2-i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2-i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2-i] > 0 && chessprim[x1+2+i][y1+2-i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2+i][y1+2] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2+i][y1+2] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2+i][y1+2] > 0 && chessprim[x1+2+i][y1+2] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2-i][y1+2] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2-i][y1+2] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2-i][y1+2] > 0 && chessprim[x1+2-i][y1+2] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-i,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2+i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2+i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2+i] > 0 && chessprim[x1+2][y1+2+i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1+i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+                for(int i = 1;1;i++){
+                    if(chessprim[x1+2][y1+2-i] == EMPTY) {score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                    else
+                    {
+                        if(collor == 1)
+                        {
+                        if(chessprim[x1+2][y1+2-i] < 0){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        }
+                        else
+                            if(chessprim[x1+2][y1+2-i] > 0 && chessprim[x1+2][y1+2-i] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1-i,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+                        break;
+                    }
+                }
+
+
+            }
+            if (piece_type == 6 || piece_type == -6){
+               if((chessprim[x1+2+1][y1+2+1] == EMPTY || chessprim[x1+2+1][y1+2+1] *collor < 0 )&& chessprim[x1+2+1][y1+2+1] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+1,y1+1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+               if((chessprim[x1+2-1][y1+2+1] == EMPTY || chessprim[x1+2-1][y1+2+1] *collor < 0 )&& chessprim[x1+2-1][y1+2+1] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-1,y1+1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+               if((chessprim[x1+2+1][y1+2-1] == EMPTY || chessprim[x1+2+1][y1+2-1] *collor < 0 )&& chessprim[x1+2+1][y1+2-1] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+1,y1-1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+               if((chessprim[x1+2-1][y1+2-1] == EMPTY || chessprim[x1+2-1][y1+2-1] *collor < 0 )&& chessprim[x1+2-1][y1+2-1] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-1,y1-1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+               if((chessprim[x1+2][y1+2-1] == EMPTY || chessprim[x1+2][y1+2-1] *collor < 0 )&& chessprim[x1+2][y1+2-1] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1-1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+               if((chessprim[x1+2-1][y1+2] == EMPTY || chessprim[x1+2-1][y1+2] *collor < 0 )&& chessprim[x1+2-1][y1+2] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1-1,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+               if((chessprim[x1+2][y1+2+1] == EMPTY || chessprim[x1+2][y1+2+1] *collor < 0 )&& chessprim[x1+2][y1+2+1] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1,y1+1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+               if((chessprim[x1+2+1][y1+2] == EMPTY || chessprim[x1+2+1][y1+2] *collor < 0 )&& chessprim[x1+2+1][y1+2] != OUT){score =  negaMax(depth - 1,chessprim,materialprim,x1,y1,x1+1,y1,collor*-1);if(score.strength*-1 > maks.strength){score.strength*=-1; maks = score;}}
+            }
+        }
+        if(depth != depthstat)
+        {
+        maks.x1 = x1move;
+        maks.x2 = x2move;
+        maks.y1 = y1move;
+        maks.y2 = y2move;
+        }
+   return maks;
+}
+
+
+int main(){
+    int x1,y1,x2,y2;
+    int collor = 1;
+    while(1)
+    {
+        wypisz();
+        cin>>x1>>y1>>x2>>y2;
+
+ if (moving(x1,y1,x2,y2,collor))
+ {
+     collor *= -1;
+hipomove answer;
+answer = negaMax(depthstat,chess,material,-1,-1,-1,-1,collor);
+moving(answer.x1,answer.y1,answer.x2,answer.y2,collor);
+cout<<answer.x1<<" "<<answer.y1<<" "<<answer.x2<<" "<<answer.y2<<"Sila to"<<answer.strength<<endl;
+
+collor *= -1;
+ }
+    }
+
+    return 0;
+}
