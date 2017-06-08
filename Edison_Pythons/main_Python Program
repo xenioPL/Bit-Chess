@@ -72,7 +72,7 @@ class Profile(dbus.service.Object):
 		server_sock = socket.fromfd(self.fd, socket.AF_UNIX, socket.SOCK_STREAM)
 		server_sock.setblocking(1)
 		server_sock.send("This is Edison SPP loopback test\nAll data will be loopback\nPlease start:\n")
-
+	turnorder = 1
 		try:
 		    while True:
 		        data = server_sock.recv(1024)
@@ -89,7 +89,18 @@ class Profile(dbus.service.Object):
 						x = mraa.Aio(Columns2[y])
 						if(y.readFloat()):
 							Matrix[x][y+4] = 1
-				Send()
+				button1 = mraa.Aio(4)
+				button2 = mraa.Aio(5)
+				if(button1.readFloat):
+					server_sock.send(1)
+					Send()
+					turnorder = 2
+					server_sock.send(json.dumps(Matrix))
+				if(button2.readFloat):
+					server_sock.send(2)
+					Send()
+					turnorder = 1
+					server_sock.send(json.dumps(Matrix))
 		except IOError:
 		    pass
 
