@@ -27,6 +27,9 @@ config = {
   'raise_on_warnings': True,
 }
 Matrix = [[0 for x in range(8)] for y in range(8)] 
+Rows = 2,3,4,5,6,7,8,9
+Columns1 = 10,11,12,13
+Columns2 = 0,1,2,3
 def Send ():
 	try:
 	cnx = mysql.connector.connect(**config)
@@ -45,8 +48,6 @@ def Send ():
                "VALUES (%s)")
 	cursor.execute(add_move, json.dumps(Matrix))
 	cnx.close()
-
-arra
 class Profile(dbus.service.Object):
 	fd = -1
 
@@ -76,8 +77,18 @@ class Profile(dbus.service.Object):
 		    while True:
 		        data = server_sock.recv(1024)
 		        print("received: %s" % data)
-				for x in range	(0,8)
-					
+				for x in range (0,8):
+					x = mraa.Gpio(Rows[x])
+					x.dir(mraa.DIR_OUT)
+					x.print(1)
+					for y in  range (0,4):
+						x = mraa.Gpio(Columns1[y])
+						y.dir(mraa.DIR_IN)
+						Matrix[x][y] = y.read()
+					for y in  range (0,4):
+						x = mraa.Aio(Columns2[y])
+						if(y.readFloat()):
+							Matrix[x][y+4] = 1
 				Send()
 		except IOError:
 		    pass
