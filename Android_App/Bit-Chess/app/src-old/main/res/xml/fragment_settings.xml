@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Wygląd aplikacji">
+
+    </PreferenceCategory>
+
+    <ListPreference
+        android:defaultValue="26"
+        android:title="Rozmiar tekstu"
+        android:entries="@array/text_size"
+        android:entryValues="@array/text_size_values"
+        android:key="text_size" />
+
+
+    <PreferenceCategory
+        android:title="Aplikacja">
+
+    </PreferenceCategory>
+
+    <ListPreference
+        android:defaultValue="26"
+        android:title="Język"
+        android:entries="@array/text_size"
+        android:entryValues="@array/text_size_values"
+        android:key="text_size" />
+
+
+    <PreferenceCategory
+        android:title="Szachy">
+
+    </PreferenceCategory>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:title="(Nintendo) SWITCH! ----->"
+        android:key="switch_preference_1" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:title="Hardcore hacking mode"
+        android:key="check_box_preference_1" />
+
+</PreferenceScreen>

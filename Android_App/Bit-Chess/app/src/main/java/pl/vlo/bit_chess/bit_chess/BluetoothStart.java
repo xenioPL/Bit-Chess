@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 /**
@@ -18,17 +17,28 @@ import android.widget.Toast;
 
 public class BluetoothStart extends Fragment {
 
-    View view;
+    private View view;
+    private Button button;
+    private Typeface GearsOfPeaceFont;
 
-    public static final int REQUEST_ENABLE_BT = 1;
+    private static final int REQUEST_ENABLE_BT = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.bluetooth_start, container, false);
 
-        Typeface GearsOfPeaceFont = Typeface.createFromAsset(getActivity().getAssets(),"GearsOfPeace.ttf");
+        initializeViews();
+        executeMethods();
 
-        Button button = (Button) view.findViewById(R.id.bluetooth_start);
+        return view;
+    }
+
+    private void initializeViews(){
+        GearsOfPeaceFont = Typeface.createFromAsset(getActivity().getAssets(),"GearsOfPeace.ttf");
+        button = (Button) view.findViewById(R.id.bluetooth_start);
+    }
+
+    private void executeMethods(){
         button.setTypeface(GearsOfPeaceFont);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,11 +49,10 @@ public class BluetoothStart extends Fragment {
                 }
             }
         });
-
-        return view;
     }
 
-    public void turnOnBluetooth(){
+
+    private void turnOnBluetooth(){
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth

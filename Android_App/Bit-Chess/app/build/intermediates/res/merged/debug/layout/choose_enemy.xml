@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="PvP"
+            android:background="@drawable/button"
+            android:textSize="60sp"
+            android:layout_margin="60dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textAllCaps="false"
+            android:id="@+id/pvp"
+            android:textColor="#FFFFFF"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="PvE"
+            android:background="@drawable/button"
+            android:textSize="60sp"
+            android:layout_margin="60dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textAllCaps="false"
+            android:id="@+id/pve"
+            android:textColor="#FFFFFF"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

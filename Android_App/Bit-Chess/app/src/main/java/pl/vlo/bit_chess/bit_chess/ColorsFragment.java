@@ -2,7 +2,9 @@ package pl.vlo.bit_chess.bit_chess;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,26 +14,51 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
 /**
  * Created by Yoshimoo12 on 2017-04-15.
  */
 
 public class ColorsFragment extends Fragment {
 
-    View view;
-    ColorsAdapter colorsAdapter;
+    private View view;
+    private ColorsAdapter colorsAdapter;
+    private ListView lv;
+    private Typeface font;
+    private String COLORS_PREFS_CODE = "ColorsArrayList";
+
     final static int COLOR_ACTIVITY_CODE = 1;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.colors_layout, container, false);
 
-        colorsAdapter = new ColorsAdapter(view.getContext());
-        ListView lv = (ListView) view.findViewById(R.id.colors_list);
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        colorsAdapter.addElement(Color.rgb(0, 0, 0), "Kolor pierwszego gracza");
-        colorsAdapter.addElement(Color.rgb(255, 255, 255), "Kolor drugiego gracza");
-        colorsAdapter.addElement(Color.rgb(0, 200, 0), "Kolor możliwych ruchów");
-        colorsAdapter.addElement(Color.rgb(200, 0, 0), "Kolor zagrożenia");
+        initViews();
+        executeMethods();
+
+        loadColors();
+
+        return view;
+    }
+
+    private void initViews(){
+        font = Typeface.createFromAsset(getActivity().getAssets(),"GearsOfPeace.ttf");
+        colorsAdapter = new ColorsAdapter(view.getContext(), font);
+        lv = (ListView) view.findViewById(R.id.colors_list);
+    }
+
+    private void executeMethods(){
+        colorsAdapter.addElement(Color.rgb(0, 0, 0), "first player");
+        colorsAdapter.addElement(Color.rgb(255, 255, 255), "second player");
+        colorsAdapter.addElement(Color.rgb(0, 200, 0), "possible moves");
+        colorsAdapter.addElement(Color.rgb(200, 0, 0), "dangers");
 
         lv.setAdapter(colorsAdapter);
 
@@ -41,8 +68,6 @@ public class ColorsFragment extends Fragment {
                 startChooseColorActivity(colorsAdapter.getColor(i), i);
             }
         });
-
-        return view;
     }
 
     @Override
@@ -55,6 +80,8 @@ public class ColorsFragment extends Fragment {
                     int position = data.getIntExtra("position", 0);
                     colorsAdapter.changeColor(position, color);
                     colorsAdapter.notifyDataSetChanged();
+                    saveColors();
+                    lv.setAdapter(colorsAdapter);
                     Toast.makeText(getContext(), "Zapisano", Toast.LENGTH_SHORT).show();
                 }
                 else if(resultCode == Activity.RESULT_CANCELED){
@@ -71,6 +98,26 @@ public class ColorsFragment extends Fragment {
         colorChooseIntent.putExtra("color", color);
         colorChooseIntent.putExtra("position", position);
         startActivityForResult(colorChooseIntent, COLOR_ACTIVITY_CODE);
+    }
+
+    private void saveColors(){
+        Gson gson = new Gson();
+        SharedPreferences sp = getActivity().getSharedPreferences("bit-chess", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor spEdit = sp.edit();
+
+        String json = gson.toJson(colorsAdapter.getArrayOfColors());
+        spEdit.putString(COLORS_PREFS_CODE, json);
+        spEdit.apply();
+    }
+
+    private void loadColors(){
+        Gson gson = new Gson();
+        SharedPreferences sp = getActivity().getSharedPreferences("bit-chess", Activity.MODE_PRIVATE);
+        String json = sp.getString(COLORS_PREFS_CODE, "");
+        if(json.equals(""))return;
+        Type type = new TypeToken<ArrayList<Integer>>() {}.getType();
+        ArrayList<Integer> arrayList = gson.fromJson(json, type);
+        colorsAdapter.setArrayOfColors(arrayList);
     }
 
 }

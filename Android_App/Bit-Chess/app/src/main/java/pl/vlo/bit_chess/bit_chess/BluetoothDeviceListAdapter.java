@@ -10,17 +10,16 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 /**
  * Created by Yoshimoo12 on 2017-05-18.
  */
 
-public class BluetoothDeviceListAdapter extends BaseAdapter {
+class BluetoothDeviceListAdapter extends BaseAdapter {
 
-    Context context;
-    LayoutInflater inflater;
-    ArrayList<BluetoothDevice> device;
+    private Context context;
+    private LayoutInflater inflater;
+    private ArrayList<BluetoothDevice> device;
 
     BluetoothDeviceListAdapter(Context context, ArrayList<BluetoothDevice> device){
         this.context = context;
@@ -31,7 +30,7 @@ public class BluetoothDeviceListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return Math.max(device.size(), 6);
+        return device.size();
     }
 
     @Override
@@ -46,18 +45,16 @@ public class BluetoothDeviceListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parentGroup) {
-        View view = inflater.inflate(R.layout.device_element, null);
-
-        Typeface GearsOfPeaceFont = Typeface.createFromAsset(context.getAssets(),"GearsOfPeace.ttf");
-        TextView name = (TextView) view.findViewById(R.id.device_name);
-        name.setTypeface(GearsOfPeaceFont);
-        if(device.size()<=position){
-            name.setText("BIT-CHESS-"+position);
-        }
-        else{
-            String deviceName = device.get(position).getName();
+        if(convertView!=null)return convertView;
+        else {
+            View view = inflater.inflate(R.layout.device_element, null);
+            Typeface GearsOfPeaceFont = Typeface.createFromAsset(context.getAssets(), "GearsOfPeace.ttf");
+            TextView name = (TextView) view.findViewById(R.id.device_name);
+            name.setTypeface(GearsOfPeaceFont);
+            String deviceName = device.get(position).getName().toUpperCase();
             name.setText(deviceName);
+            return view;
         }
-        return view;
+
     }
 }

@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="pl.vlo.bit_chess.bit_chess.MainActivity">
+
+    <item
+        android:id="@+id/preferences"
+        android:title="Preferences" />
+
+    <item
+        android:id="@+id/bluetooth"
+        android:title="Bluetooth" />
+
+</menu>

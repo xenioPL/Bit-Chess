@@ -1,0 +1,4 @@
+#Sun Jun 11 23:25:40 CEST 2017
+base.0=C\:\\Users\\Yoshimoo12\\Documents\\GitHub\\Bit-Chess\\Android_App\\Bit-Chess\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
+renamed.0=classes.dex
+file.0=C\:\\Users\\Yoshimoo12\\Documents\\GitHub\\Bit-Chess\\Android_App\\Bit-Chess\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex

@@ -3,6 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="placeholder">Android</string>
 
+    <string name="testString">TestString</string>
+
     <string-array name="text_size_values">
         <item>20</item>
         <item>26</item>
@@ -15,6 +17,10 @@
         <item>Duży</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="language">
+        <item>Polski</item>
+        <item>English</item>
+        <item>Deutsch</item>
+    </string-array>
+
 </resources>

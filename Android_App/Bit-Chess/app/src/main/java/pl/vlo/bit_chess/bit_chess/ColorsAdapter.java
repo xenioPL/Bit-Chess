@@ -1,12 +1,12 @@
 package pl.vlo.bit_chess.bit_chess;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,11 +19,17 @@ class ColorsAdapter extends BaseAdapter {
 
     private Context context;
     private LayoutInflater inflater;
+    private ArrayList<Integer> mColors;
+    private ArrayList<String> mString;
+    private Typeface font;
 
-    ColorsAdapter(Context context) {
+    ColorsAdapter(Context context, Typeface font) {
         this.context = context;
-        inflater = (LayoutInflater) context.
+        this.inflater = (LayoutInflater) context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mColors = new ArrayList<>();
+        this.mString = new ArrayList<>();
+        this.font = font;
     }
 
     public int getCount() {
@@ -43,15 +49,16 @@ class ColorsAdapter extends BaseAdapter {
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View view = inflater.inflate(R.layout.colors_element, null);
-
+        if(convertView!=null)return convertView;
+        else {
+            View view = inflater.inflate(R.layout.colors_element, null);
             TextView textView = (TextView) view.findViewById(R.id.colors_name);
+            textView.setTypeface(font);
             ImageView imageView = (ImageView) view.findViewById(R.id.colors_color);
-
             imageView.setBackgroundColor(mColors.get(position));
             textView.setText(mString.get(position));
-
-        return view;
+            return view;
+        }
     }
 
     public void addElement(int color, String name){
@@ -59,12 +66,18 @@ class ColorsAdapter extends BaseAdapter {
         mString.add(name);
     }
 
+    public ArrayList<Integer> getArrayOfColors(){
+        return mColors;
+    }
+
+    public void setArrayOfColors(ArrayList<Integer> colors){
+        mColors = colors;
+        notifyDataSetChanged();
+    }
+
     public void changeColor(int position, int color){
         mColors.set(position, color);
     }
-
-    private ArrayList<Integer> mColors = new ArrayList<>();
-    private ArrayList<String> mString =  new ArrayList<>();
 
 }
 

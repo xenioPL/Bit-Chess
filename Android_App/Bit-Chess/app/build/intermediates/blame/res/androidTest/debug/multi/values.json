@@ -1,0 +1,26 @@
+[
+    {
+        "outputFile": "C:\\Users\\Yoshimoo12\\Documents\\GitHub\\Bit-Chess\\Android_App\\Bit-Chess\\app\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 45,
+                    "endOffset": 96
+                },
+                "from": {
+                    "file": "C:\\Users\\Yoshimoo12\\.android\\build-cache\\19a86651ecb84ac119ae46a28612d620a884249f\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 229,
+                        "endColumn": 45,
+                        "endOffset": 270
+                    }
+                }
+            }
+        ]
+    }
+]

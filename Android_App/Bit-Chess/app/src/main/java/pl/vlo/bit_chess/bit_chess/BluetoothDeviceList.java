@@ -1,8 +1,12 @@
 package pl.vlo.bit_chess.bit_chess;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,38 +26,55 @@ import java.util.ArrayList;
 
 public class BluetoothDeviceList extends Fragment {
 
-    View view;
+    private BluetoothDeviceListAdapter adapter;
+    private ArrayList<BluetoothDevice> devices;
+    private Typeface GearsOfPeaceFont;
+    private ArrayList<BluetoothDevice> unpairedDevicesList;
+
+    private ListView list;
+    private TextView empty;
+
+    private View view;
+
    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.bluetooth_device_list, container, false);
 
-        ArrayList<BluetoothDevice> devices = new ArrayList<>();
+        initializeViews();
+        executeMethods();
 
+        return view;
+    }
+
+    private void initializeViews(){
+        unpairedDevicesList = new ArrayList<>();
+        devices = new ArrayList<>();
+        GearsOfPeaceFont = Typeface.createFromAsset(getActivity().getAssets(),"GearsOfPeace.ttf");
+        adapter = new BluetoothDeviceListAdapter(getContext(), devices);
+        list = (ListView) view.findViewById(R.id.bluetooth_device_list);
+        empty = (TextView) view.findViewById(R.id.empty);
+
+    }
+
+    private void executeMethods(){
         devices.addAll(getPairedDevices());
-
-        Typeface GearsOfPeaceFont = Typeface.createFromAsset(getActivity().getAssets(),"GearsOfPeace.ttf");
-
-        final BluetoothDeviceListAdapter adapter = new BluetoothDeviceListAdapter(getContext(), devices);
-        ListView list = (ListView) view.findViewById(R.id.bluetooth_device_list);
-        TextView empty = (TextView) view.findViewById(R.id.empty);
         empty.setTypeface(GearsOfPeaceFont);
         list.setEmptyView(empty);
         list.setAdapter(adapter);
-       list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               // Get the device MAC address, the last 17 chars in the View
-               BluetoothDevice bd = (BluetoothDevice) adapter.getItem(position);
-               String address = bd.getAddress();
-               // Make an intent to start next activity.
-               Intent i = new Intent(getContext(), Game.class);
-               //Change the activity.
-               i.putExtra("ADDRESS", address); //this will be received at ledControl (class) Activity
-               startActivity(i);
-           }
-       });
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                BluetoothDevice bd = (BluetoothDevice) adapter.getItem(position);
+                String address = bd.getAddress();
+                saveAddress(address);
+                //connected
+                Toast.makeText(getContext(), "Connected", Toast.LENGTH_SHORT).show();
 
-        return view;
+                Intent i = new Intent(getContext(), GameActivity.class);
+                startActivity(i);
+            }
+        });
+        //detectDevices();
     }
 
     private ArrayList<BluetoothDevice> getPairedDevices(){
@@ -72,7 +94,27 @@ public class BluetoothDeviceList extends Fragment {
         return pairedDevices;
     }
 
-    private boolean searchForDevices(){
-        return false;
+    /*rivate void detectDevices(){
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothAdapter.startDiscovery();
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if(BluetoothDevice.ACTION_FOUND.equals(action)){
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    unpairedDevicesList.add(device);
+                }
+            }
+        };
+
+    }
+    */
+
+    private void saveAddress(String address){
+        SharedPreferences sp = getActivity().getSharedPreferences("bit-chess", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor spEdit = sp.edit();
+        spEdit.putString("address", address);
+        spEdit.apply();
     }
 }
