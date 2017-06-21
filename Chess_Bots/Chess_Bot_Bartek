@@ -2,9 +2,9 @@
 using namespace std;
 #define B_K   -6 //król
 #define B_D   -5 //hetman
-#define B_S   -4 //koñ
+#define B_S   -4 //koń
 #define B_L   -3 //goniec
-#define B_T   -2 // wierza
+#define B_T   -2 // wieża
 #define B_B   -1 //pionek
 #define EMPTY   0
 #define W_B    1
